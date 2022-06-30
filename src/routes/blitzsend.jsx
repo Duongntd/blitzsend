@@ -1,9 +1,6 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
 
 export default function Blitzsend() {
-	const location = useLocation();
-	const handleSubmit = location.state;
 	const [inputData, setInputData] = React.useState({
 		messageTitle: '',
 		messageAuthor: '',
@@ -32,13 +29,17 @@ export default function Blitzsend() {
 		);
 	});
 
+	const handleSubmit = (event) => {
+		event.preventDefault();
+		console.log(inputData);
+	};
 	return (
 		<main>
 			<header>
 				<h1>Blitzsend</h1>
 			</header>
 			<section className='form-input'>
-				<form onSubmit={(event) => handleSubmit(event, inputData)}>
+				<form onSubmit={(event) => handleSubmit(event)}>
 					<button>Submit</button>
 				</form>
 				{inputField}
