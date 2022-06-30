@@ -4,12 +4,7 @@ import React from "react";
 import { readData, writeData } from "./firebase/firebase";
 
 function App() {
-  const [messageList, setMessageList] = React.useState([]);
 
-  const handleSubmit = (event, inputData) => {
-    event.preventDefault();
-    setMessageList((previousMessages) => [...previousMessages, inputData]);
-  };
   return (
     <div>
       <button onClick={writeData}>Write</button>
@@ -32,6 +27,16 @@ function App() {
       <Outlet />
     </div>
   );
+	return (
+		<div>
+			<h1>Bookkeeper</h1>
+			<nav>
+				<Link to='/blitzsend'>Blitzsend</Link> |{' '}
+				<Link to='/blitzcatch'>Blitzcatch</Link>
+			</nav>
+			<Outlet />
+		</div>
+	);
 }
 
 export default App;
