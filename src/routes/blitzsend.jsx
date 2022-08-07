@@ -88,7 +88,7 @@ export default function Blitzsend() {
 					<div className='flex'>
 						<div className='input-container'>{inputField}</div>
 						<label htmlFor=''>
-							Set timer
+							Set time
 							<input type='text' />
 						</label>
 					</div>
