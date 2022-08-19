@@ -60,10 +60,12 @@ export default function Blitzcatch() {
 
 	// display messages
 	const messageList = data.map((message) => {
+		let convertedTimer = message.timer / 60000;
 		return (
 			<div key={message.id}>
 				<h2>{message.messageTitle}</h2>
 				<p>{message.isShown && message.messageContent}</p>
+				<p>Timer: {convertedTimer} Mins</p>
 
 				<label htmlFor='messagePassword'>Password: </label>
 				<input
