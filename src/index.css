@@ -17,8 +17,15 @@ code {
 	box-sizing: border-box;
 	font-family: 'Poppins', sans-serif;
 }
+a {
+	text-decoration: none;
+	color: white;
+}
 .flex {
 	display: flex;
+}
+.relative {
+	position: relative;
 }
 .form-section {
 	display: flex;
@@ -66,4 +73,23 @@ code {
 .input-label.focusing {
 	opacity: 1;
 	transform: translateY(0%);
+}
+.nav {
+	display: flex;
+	justify-content: space-evenly;
+	gap: 3px;
+	margin: 0;
+	width: 101vw;
+	margin-inline-start: 50%;
+	padding: 6px 10px;
+	color: white;
+	position: fixed;
+	bottom: 100%;
+	transform: translateX(calc(-50% - 16px)) translateY(100px);
+}
+.nav-open {
+	display: flex;
+}
+.nav-close {
+	display: none;
 }

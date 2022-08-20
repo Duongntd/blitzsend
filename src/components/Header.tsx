@@ -80,10 +80,9 @@ export function HeaderSimple({ links }: HeaderSimpleProps) {
 			{link.label}
 		</Link>
 	));
-
 	return (
 		<Header height={60} mb={120}>
-			<Container className={classes.header}>
+			<Container className={`${classes.header}`}>
 				<h2>Blitzsend</h2>
 				<Group spacing={5} className={classes.links}>
 					{items}
@@ -95,6 +94,9 @@ export function HeaderSimple({ links }: HeaderSimpleProps) {
 					className={classes.burger}
 					size='sm'
 				/>
+				<nav className={`nav ${opened ? 'nav-open' : 'nav-close'}`}>
+					{items}
+				</nav>
 			</Container>
 		</Header>
 	);
