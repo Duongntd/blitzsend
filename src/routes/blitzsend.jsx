@@ -1,6 +1,7 @@
 import React from 'react';
 import { db } from '../firebase/firebase';
-import { collection, addDoc, deleteDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, doc, deleteDoc } from 'firebase/firestore';
+import { Button } from '@mantine/core';
 
 export default function Blitzsend() {
 	const [inputData, setInputData] = React.useState({
@@ -8,19 +9,20 @@ export default function Blitzsend() {
 		messageAuthor: '',
 		messagePassword: '',
 		messageContent: '',
-		isShown: false,
-		testKey: '',
-		locked: true,
 		timer: 300000,
 	});
 
 	const messagesCollectionRef = collection(db, 'messages');
 	const sendMessage = async () => {
-		const thisDoc = await addDoc(messagesCollectionRef, inputData);
-		const docRef = doc(db, 'messages', thisDoc.id);
-		setTimeout(async () => {
-			await deleteDoc(docRef);
-		}, inputData.timer);
+		try {
+			const thisDoc = await addDoc(messagesCollectionRef, inputData);
+			const docRef = doc(db, 'messages', thisDoc.id);
+			setTimeout(async () => {
+				await deleteDoc(docRef);
+			}, inputData.timer);
+		} catch (err) {
+			console.log(err);
+		}
 	};
 	const inputs = [];
 	for (let input in inputData) {
@@ -57,34 +59,31 @@ export default function Blitzsend() {
 			messageContent: '',
 		});
 	};
-	const handleSubmit = (event) => {
-		event.preventDefault();
+	const validateInput = () => {
 		if (inputData.messageTitle.trim() === '') {
 			alert('Please enter message title');
-			return;
+			return false;
 		} else if (inputData.messageAuthor.trim() === '') {
 			alert('Please enter message author');
-			return;
+			return false;
 		} else if (inputData.messagePassword.trim() === '') {
 			alert('Please enter a password');
-			return;
+			return false;
 		} else if (inputData.messageContent.trim() === '') {
 			alert('Please enter message content');
-			return;
-		} else {
+			return false;
+		} else return true;
+	};
+	const handleSubmit = () => {
+		if (validateInput()) {
 			sendMessage();
 			clearInputData();
 		}
 	};
 	return (
 		<main>
-			<header>
-				<h2>Blitzsend</h2>
-			</header>
 			<section className='form-section'>
-				<form
-					className='form-container'
-					onSubmit={(event) => handleSubmit(event)}>
+				<form className='form-container'>
 					<div className='file-type-sel'>
 						<span>Text</span>
 						<span>Image</span>
@@ -176,13 +175,14 @@ export default function Blitzsend() {
 									onBlur={(event) => onBlur(event, 'Content')}
 								/>
 							</div>
-							<button onClick={(event) => autoFill(event)}>Auto fill</button>
+							<Button onClick={(event) => autoFill(event)}>Auto fill</Button>
 						</div>
 						<label htmlFor='timer'>
 							Set Timer
 							<select
 								name='timer'
 								id='timer'
+								value={inputData.timer}
 								onChange={(event) =>
 									setInputData({ ...inputData, timer: event.target.value })
 								}>
@@ -192,7 +192,7 @@ export default function Blitzsend() {
 							</select>
 						</label>
 					</div>
-					<button>Submit</button>
+					<Button onClick={() => handleSubmit()}>Submit</Button>
 				</form>
 			</section>
 		</main>

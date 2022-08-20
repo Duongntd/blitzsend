@@ -1,13 +1,6 @@
 import React from 'react';
 import { db } from '../firebase/firebase';
-import {
-	collection,
-	doc,
-	getDoc,
-	getDocs,
-	updateDoc,
-	deleteDoc,
-} from 'firebase/firestore';
+import { collection, doc, getDocs, deleteDoc } from 'firebase/firestore';
 
 export default function Blitzcatch() {
 	const [data, setData] = React.useState([]);
@@ -17,19 +10,33 @@ export default function Blitzcatch() {
 	// get all messages
 	React.useEffect(() => {
 		const getMessages = async () => {
-			const data = await getDocs(messagesCollectionRef);
-			setData(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+			try {
+				const data = await getDocs(messagesCollectionRef);
+				setData(
+					data.docs.map((doc) => ({
+						...doc.data(),
+						id: doc.id,
+						isShown: false,
+						locked: true,
+					}))
+				);
+			} catch (err) {
+				console.log('Error getting message: ', err);
+			}
 		};
 		getMessages();
-	}, [messagesCollectionRef]);
+	}, []);
 
 	// password test and unlock
-	const passTest = async (id, locked) => {
-		const docRef = doc(db, 'messages', id);
-		const docSnap = await getDoc(docRef);
-		const docData = docSnap.data();
-		if (passCheck[id] === docData.messagePassword) {
-			await updateDoc(docRef, { locked: !locked, isShown: false });
+	const passTest = (id) => {
+		const thisDoc = data.find((doc) => doc.id === id);
+		if (passCheck[id] === thisDoc.messagePassword) {
+			setData(
+				data.map((doc) => {
+					if (doc.id === id) return { ...doc, locked: !doc.locked };
+					else return doc;
+				})
+			);
 			setPassCheck({ ...passCheck, [id]: '' });
 		} else {
 			alert('Wrong password!');
@@ -41,7 +48,12 @@ export default function Blitzcatch() {
 	const deleteMessage = async (id, demo) => {
 		const docRef = doc(db, 'messages', id);
 		if (!demo) {
-			await deleteDoc(docRef);
+			try {
+				await deleteDoc(docRef);
+				setData(data.filter((doc) => doc.id !== id));
+			} catch (err) {
+				console.log('Error deleting doc: ', err);
+			}
 			return;
 		} else if (demo) {
 			alert('Cannot delete demo content');
@@ -53,9 +65,13 @@ export default function Blitzcatch() {
 	};
 
 	// show content
-	const toggleContent = async (id, isShown) => {
-		const docRef = doc(db, 'messages', id);
-		await updateDoc(docRef, { isShown: !isShown });
+	const toggleContent = (id) => {
+		setData(
+			data.map((doc) => {
+				if (doc.id === id) return { ...doc, isShown: !doc.isShown };
+				else return doc;
+			})
+		);
 	};
 
 	// display messages
@@ -82,8 +98,7 @@ export default function Blitzcatch() {
 				</button>
 				{!message.locked && (
 					<div>
-						<button onClick={() => toggleContent(message.id, message.isShown)}>
-							{' '}
+						<button onClick={() => toggleContent(message.id)}>
 							{message.isShown ? 'Hide' : 'Show'} content
 						</button>
 
@@ -96,10 +111,5 @@ export default function Blitzcatch() {
 		);
 	});
 
-	return (
-		<main style={{ padding: '1rem 0' }}>
-			<h2>Blitzcatch</h2>
-			{messageList}
-		</main>
-	);
+	return <main>{messageList}</main>;
 }

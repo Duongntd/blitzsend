@@ -1,20 +1,22 @@
 import './App.css';
-import { Outlet, Link } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import React from 'react';
+import { MantineProvider } from '@mantine/core';
+import { HeaderSimple } from './components/Header.tsx';
 
 function App() {
 	return (
 		<div>
-			<h1>BLITZSENDEN</h1>
-			<nav
-				style={{
-					borderBottom: 'solid 1px',
-					paddingBottom: '1rem',
-				}}>
-				<Link to='/blitzsend'>Blitzsend</Link> |{' '}
-				<Link to='/blitzcatch'>Blitzcatch</Link>
-			</nav>
-			<Outlet />
+			<MantineProvider withGlobalStyles withNormalizeCSS>
+				<HeaderSimple
+					links={[
+						{ link: '/', label: 'Home' },
+						{ link: '/blitzsend', label: 'Blitzsend' },
+						{ link: '/blitzcatch', label: 'Blitzcatch' },
+						{ link: '/about', label: 'About' },
+					]}></HeaderSimple>
+				<Outlet />
+			</MantineProvider>
 		</div>
 	);
 }
