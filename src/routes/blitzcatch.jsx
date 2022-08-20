@@ -25,6 +25,7 @@ export default function Blitzcatch() {
 			}
 		};
 		getMessages();
+		// eslint-disable-next-line
 	}, []);
 
 	// password test and unlock
